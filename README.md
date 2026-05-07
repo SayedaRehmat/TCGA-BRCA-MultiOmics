@@ -134,7 +134,9 @@ TCGA-BRCA RNA-seq + Clinical Metadata
 • Deep Neural Network classifier
 • Variational Autoencoder (VAE)
 • Permutation feature importance
-#  Key Findings
+
+---
+#Key Findings
 
 ## Transcriptomic Subtype Reconstruction
 
@@ -291,3 +293,4 @@ The framework provides a strong foundation for future expansion toward:
 - single-cell transcriptomics
 - translational biomarker discovery
 - next-generation explainable oncology systems
+---
