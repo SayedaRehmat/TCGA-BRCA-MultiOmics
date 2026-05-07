@@ -279,7 +279,7 @@ The findings reproduce major observations from landmark breast cancer transcript
 #  Results & Figures
 
 ### Master Dashboard
-![Master Dashboard](figures/00_MASTER_DASHBOARD .png)
+![Master Dashboard](figures/00_MASTER_DASHBOARD.png)
 
 ### Survival Analysis
 ![Survival Analysis](figures/SURVIVAL_ANALYSIS_COMPLETE.png)
