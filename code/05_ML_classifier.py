@@ -521,7 +521,7 @@ metrics = {
     ],
     'C_index_OS': [
         round(cindex, 4),
-        'NA'
+        round(cindex,4)
     ],
 }
 
