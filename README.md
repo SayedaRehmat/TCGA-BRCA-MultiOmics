@@ -134,9 +134,11 @@ TCGA-BRCA RNA-seq + Clinical Metadata
 • Deep Neural Network classifier
 • Variational Autoencoder (VAE)
 • Permutation feature importance
+```
 
 ---
-#Key Findings
+
+#  Key Findings
 
 ## Transcriptomic Subtype Reconstruction
 
@@ -275,7 +277,7 @@ The findings reproduce major observations from landmark breast cancer transcript
 
 ---
 
-# Conclusion
+#  Conclusion
 
 This project establishes a reproducible computational oncology framework for transcriptomic subtype discovery, explainable AI classification, and biomarker prioritization in breast cancer.
 
@@ -293,4 +295,3 @@ The framework provides a strong foundation for future expansion toward:
 - single-cell transcriptomics
 - translational biomarker discovery
 - next-generation explainable oncology systems
----
