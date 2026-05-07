@@ -276,15 +276,19 @@ The findings reproduce major observations from landmark breast cancer transcript
 | Koboldt et al. (2012) | BRCA-associated pathway biology supported |
 
 ---
-#  Results & Figures
-Master Dashboard
-Show Image
-Survival Analysis
-Show Image
-Biomarker Discovery
-Show Image
-AI Deep Learning Results
-Show Image
+#  ## 📊 Results & Figures
+
+### Master Dashboard
+![Master Dashboard](figures/00_MASTER_DASHBOARD.png)
+
+### Survival Analysis
+![Survival Analysis](figures/SURVIVAL_ANALYSIS_COMPLETE.png)
+
+### Biomarker Discovery
+![Biomarker Discovery](figures/BIOMARKER_DISCOVERY_COMPLETE.png)
+
+### AI Deep Learning Results
+![AI Dashboard](figures/AI_COMPLETE_DASHBOARD.png)
 
 #  Conclusion
 
