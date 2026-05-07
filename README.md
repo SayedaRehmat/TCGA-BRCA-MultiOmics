@@ -1,298 +1,255 @@
-# 🧬 TCGA-BRCA Multi-omics Subtype Discovery & AI-Driven Survival Analysis
+TCGA-BRCA Transcriptomic Subtype Discovery and Explainable AI Prognostic Modeling
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2+-orange?logo=scikitlearn)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
-![AUC](https://img.shields.io/badge/Classifier_AUC-0.997-purple)
+A reproducible computational oncology workflow for data analysis of tumour transcriptomics for subtype classification, differential gene expression and patient survival studies and for interpretable artificial intelligence-based biomarker selection using TCGA-BRCA RNA sequencing data.
 
-> **KAUST-level computational biology research pipeline** for breast cancer genomic subtype discovery, survival stratification, and AI-driven prognostic biomarker identification using TCGA-BRCA RNA-seq data (n=1,214 patients, 20,530 genes).
+Overview
 
----
+Breast cancer is a highly heterogeneous disease composed of distinct biological entities with different molecular states, clinical behavior, and therapeutic options for patients. In addition to intrinsic subtype classification systems, such as the PAM50 subtypes, there are additional molecular states and corresponding biological programs that influence clinical behavior and affect therapy selection.
 
-## 📋 Table of Contents
-- [Project Overview](#-project-overview)
-- [Key Results](#-key-results)
-- [Pipeline Architecture](#-pipeline-architecture)
-- [Repository Structure](#-repository-structure)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Results & Figures](#-results--figures)
-- [AI Modules](#-ai-modules)
-- [Literature Validation](#-literature-validation)
-- [Citation](#-citation)
+The project aims to develop an end-to-end computational transcriptomics pipeline for analysis of RNA-seq data.
 
----
+unsupervised molecular subtype discovery,
+survival-associated stratification,
+transcriptomic biomarker identification,
+pathway-level biological interpretation,
+and explainable machine learning classification.
 
-## 🔬 Project Overview
+I applied the framework to analyze RNA-seq expression data from the TCGA-BRCA cohort. The resulting subtype structure is biologically coherent and consists of three major subtypes including Luminal A-like, Luminal B-like and stromal/normal-like transcriptional programs.
 
-This project performs end-to-end genomic subtype discovery in breast cancer using the TCGA-BRCA cohort. Starting from raw RNA-seq expression data, it identifies three reproducible molecular subtypes corresponding to established PAM50 classifications, characterizes their biological programs, and builds high-accuracy AI classifiers for clinical subtype assignment.
+The project integrates:
 
-**Dataset:**
-| Item | Value |
-|------|-------|
-| Cohort | TCGA-BRCA (The Cancer Genome Atlas) |
-| Patients | 1,214 |
-| Genes | 20,530 (HiSeq V2, log2-RSEM) |
-| Endpoints | Overall Survival (OS), Progression-Free Interval (PFI) |
-| Source | [UCSC Xena](https://xenabrowser.net/) + [Liu et al. 2018 (Cell)](https://doi.org/10.1016/j.cell.2018.02.052) |
+statistical genomics,
+survival analysis,
+dimensionality reduction,
+clustering,
+explainable machine learning,
+and latent-space deep learning approaches
 
----
+within a fully reproducible research pipeline.
 
-## 🏆 Key Results
+Research Objectives
+Primary Goals
+This analysis allows users to directly reconstruct intrinsic subtypes of breast cancer from transcriptomic data using unsupervised learning.
+Identify subtype-associated differential gene expression programs.
+Evaluate survival trends across discovered transcriptomic states.
+Develop interpretable machine learning models for subtype prediction.
+Prioritize biologically meaningful biomarkers and therapeutic targets.
+Integration strategies and empirical analysis indicate a viable route toward a reproducible framework to support further multi-omics growth for long-term computational oncology.
 
-| Result | Value |
-|--------|-------|
-| Genomic subtypes discovered | **k=3** (optimal silhouette=0.212) |
-| C1 → PAM50 assignment | **Luminal A** (ESR1↑, PGR↑, FOXA1↑) |
-| C2 → PAM50 assignment | **Luminal B** (MKI67↑, CDC20↑, AURKB↑) — highest mortality |
-| C3 → PAM50 assignment | **Normal-like/Stromal** (SFRP1↑, NGFR↑, IL33↑) |
-| PAM50 genes validated | **49/50** (98%) |
-| Random Forest AUC | **0.9974** (5-fold CV) |
-| Deep Neural Net AUC | **0.9971** (validated) |
-| DEGs per cluster | 5,626 – 7,043 (FDR<5%, \|log2FC\|>0.5) |
-| Drug targets in C2 | CDC20, PLK1, AURKB, MELK *(in active clinical trials)* |
+Dataset Description
+Parameter	Description
+Cohort	TCGA-BRCA
+Source	UCSC Xena
+Patients	1,214
+Genes	20,530
+Data Type	Bulk RNA-seq (HiSeqV2 log2-RSEM)
+Clinical Data	Overall Survival (OS), Progression-Free Interval (PFI)
+Clinical Resource	Liu et al. 2018 Pan-Cancer Survival Dataset Key Findings: Analysis, Visualizations & downloadable CSV, JSON, and RData files.
 
----
+Computational Pipeline
 
-## 🏗 Pipeline Architecture
+TCGA-BRCA RNA-seq + Clinical Metadata
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Data Preprocessing & QC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Clinical-expression sample matching
+• Missing value handling
+• Low-variance gene filtering
+• Z-score normalization
+• High-dimensional matrix generation
 
-```
-Raw Data (TCGA-BRCA)
-        │
-        ▼
-Step 1: Preprocessing & QC
-  ├── Sample matching (n=1,214)
-  ├── Low-variance gene filtering (15,397 genes retained)
-  └── Z-score normalization
-        │
-        ▼
-Step 2: Dimensionality Reduction & Clustering
-  ├── Top-5000 MAD gene selection
-  ├── PCA (50 components, 64.5% variance)
-  └── Consensus K-Means (k=2..6, 10× random init) → k=3 optimal
-        │
-        ▼
-Step 3: Survival Analysis
-  ├── Kaplan-Meier curves (OS + PFI)
-  ├── Log-rank tests (pairwise, Bonferroni corrected)
-  └── Cumulative hazard (Nelson-Aalen)
-        │
-        ▼
-Step 4: Differential Expression
-  ├── One-vs-rest Welch t-tests
-  ├── BH-FDR correction
-  ├── Volcano plots + heatmaps
-  └── PAM50 gene overlap validation
-        │
-        ▼
-Step 5: ML Classifier
-  ├── Random Forest (AUC=0.997) ← baseline
-  └── Confusion matrix + C-index
-        │
-        ▼
-Step 6: Biological Interpretation
-  ├── PAM50 centroid scoring
-  ├── Hallmark pathway activity (8 pathways)
-  └── Key biomarker violin plots
-        │
-        ▼
-AI Modules (Upgrade Layer)
-  ├── AI-01: Variational Autoencoder (VAE) — non-linear latent space
-  ├── AI-02: Deep Neural Network classifier (MLP, AUC=0.9971)
-  ├── AI-03: Neural Cox survival model (DeepSurv)
-  └── AI-04: Permutation importance (SHAP-equivalent biomarker attribution)
-```
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. Dimensionality Reduction
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Median Absolute Deviation (MAD) filtering
+• Top 5000 variable genes
+• Principal Component Analysis (PCA)
 
----
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. Unsupervised Clustering
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Repeated K-Means optimization
+• k = 2–6 evaluation
+• Silhouette scoring
+• Cluster assignment
 
-## 📁 Repository Structure
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. Survival Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Kaplan-Meier estimation
+• Log-rank testing
+• Pairwise subtype comparison
+• Nelson-Aalen cumulative hazard
 
-```
-TCGA-BRCA-MultiOmics/
-│
-├── README.md                      ← You are here
-├── requirements.txt               ← Python dependencies
-├── .gitignore
-│
-├── code/                          ← All analysis scripts
-│   ├── 01_data_preprocessing.py   ← Data loading, QC, gene filtering
-│   ├── 02_clustering.py           ← PCA + consensus K-Means
-│   ├── 03_survival_analysis.py    ← KM curves, log-rank tests
-│   ├── 04_differential_expression.py ← DEGs, volcano plots, heatmap
-│   ├── 05_ML_classifier.py        ← Random Forest classifier
-│   ├── 06_biological_interpretation.py ← PAM50, pathways, biomarkers
-│   ├── 07_generate_report.py      ← PDF report generation
-│   └── AI_01_VAE.py               ← Variational Autoencoder (from scratch)
-│
-├── results/                       ← CSV outputs (CSVs tracked, PKL/NPY ignored)
-│   ├── summary_stats.csv
-│   ├── clustering_metrics.csv
-│   ├── survival_metrics.csv
-│   ├── logrank_pairwise.csv
-│   ├── DEG_C1.csv / DEG_C2.csv / DEG_C3.csv
-│   ├── top20_up_C1/C2/C3.csv
-│   ├── pathway_scores.csv
-│   ├── ml_performance.csv
-│   ├── ai_model_comparison.csv
-│   └── rf_feature_importance.csv
-│
-├── figures/                       ← All publication-quality figures
-│   ├── 00_MASTER_DASHBOARD.png
-│   ├── 01_clinical_QC.png
-│   ├── 02_PCA_clustering.png
-│   ├── 03_KaplanMeier.png
-│   ├── 04_heatmap_DEGs.png
-│   ├── 04b_volcano.png
-│   ├── 05_ML_performance.png
-│   ├── 06_subtype_pathway.png
-│   ├── SURVIVAL_ANALYSIS_COMPLETE.png
-│   ├── BIOMARKER_DISCOVERY_COMPLETE.png
-│   ├── AI_COMPLETE_DASHBOARD.png
-│   └── AI_01_VAE.png
-│
-└── BRCA_Research_Report.pdf       ← Full research report
-```
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. Differential Expression Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• One-vs-rest Welch t-tests
+• Benjamini-Hochberg FDR correction
+• Volcano visualization
+• DEG prioritization
 
----
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. Biological Interpretation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• PAM50 concordance analysis
+• Hallmark pathway scoring
+• Biomarker visualization
+• Translational interpretation
 
-## ⚙️ Installation
+                │
+                ▼
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. Explainable AI Modules
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Random Forest classification
+• Deep Neural Network classifier
+• Variational Autoencoder (VAE)
+• Permutation feature importance
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/TCGA-BRCA-MultiOmics.git
-cd TCGA-BRCA-MultiOmics
+Key Findings
 
-# 2. Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-venv\Scripts\activate           # Windows
+1. Transcriptomic Subtype Reconstruction
 
-# 3. Install dependencies
-pip install -r requirements.txt
-```
+Unsupervised clustering identified three biologically interpretable transcriptomic states:
 
-**Dependencies:**
-```
-numpy>=1.24
-pandas>=1.5
-scipy>=1.10
-scikit-learn>=1.2
-matplotlib>=3.6
-seaborn>=0.12
-reportlab>=3.6
-```
+Cluster	Biological Interpretation	Key Markers
+C1	Luminal A-like	ESR1, PGR, FOXA1
+C2	Luminal B-like	MKI67, CDC20, AURKB
+C3	Stromal/Normal-like	IL33, SFRP1, NGFR
 
----
+The post-hierarchical clustering assignments showed good correspondence with known subtype biology for breast cancer.
 
-## 🚀 Usage
+2. Clustering Performance
 
-### Download Data First
-Data files are not tracked in Git (too large). Download from:
-- **Gene expression**: [UCSC Xena TCGA-BRCA HiSeqV2](https://xenabrowser.net/datapages/?dataset=TCGA.BRCA.sampleMap%2FHiSeqV2&host=https%3A%2F%2Ftcga.xenahubs.net)
-- **Clinical survival**: [Liu et al. 2018 TCGA Pan-cancer clinical](https://www.cell.com/cell/fulltext/S0092-8674(18)30229-0)
+Optimal clustering was achieved at:
 
-Place files in a `data/` folder.
+k=3
 
-### Run Full Pipeline
-```bash
-# Run all steps in order
-python code/01_data_preprocessing.py
-python code/02_clustering.py
-python code/03_survival_analysis.py
-python code/04_differential_expression.py
-python code/05_ML_classifier.py
-python code/06_biological_interpretation.py
-python code/07_generate_report.py   # generates PDF report
+with silhouette score:
 
-# AI upgrade modules
-python code/AI_01_VAE.py            # Variational Autoencoder
-```
+s=0.2123
 
-### Run Individual Steps
-```bash
-# Just survival analysis
-python code/03_survival_analysis.py
+I find that the optimal silhouette value, which balances bulk tumor’s intrinsic biological variation with subgroup structure, to be moderate, and reflecting the natural biological variation in the tumour bulk dataset used here.
 
-# Just the AI classifier
-python code/05_ML_classifier.py
-```
+3. Differential Expression Analysis
 
----
+Subtype-specific differential expression revealed large-scale transcriptional divergence:
 
-## 📊 Results & Figures
+Metric	Result
+Significant DEGs per cluster	5,626 – 7,043
+Statistical Threshold	FDR < 0.05
+Fold Change Threshold	|log2FC| > 0.5
+Aggressive Luminal B-like Program (C2)
 
-### Master Dashboard
-![Master Dashboard](figures/00_MASTER_DASHBOARD.png)
+Strong proliferative and mitotic signatures were identified, including:
 
-### Survival Analysis
-![Survival Analysis](figures/SURVIVAL_ANALYSIS_COMPLETE.png)
+CDC20
+MKI67
+CENPA
+ORC6L
+AURKB
+PLK1
 
-### Biomarker Discovery
-![Biomarker Discovery](figures/BIOMARKER_DISCOVERY_COMPLETE.png)
+Our findings are highly consistent with an aggressive proliferative type of breast cancer as defined by prior TCGA and PAM50 studies.
 
-### AI Deep Learning Results
-![AI Dashboard](figures/AI_COMPLETE_DASHBOARD.png)
+4. Pathway-Level Biology
 
----
+Hallmark pathway analysis demonstrated:
 
-## 🤖 AI Modules
+C2 (Luminal B-like)
+proliferation ↑
+DNA repair ↑
+mitotic activity ↑
+cell-cycle signaling ↑
+C1 (Luminal A-like)
+hormone receptor signaling ↑
+endocrine-associated programs ↑
+C3 (Stromal/Normal-like)
+extracellular matrix activity ↑
+stromal signaling ↑
+immune-associated signatures ↑
 
-| Module | Method | Replaces | Key Result |
-|--------|--------|----------|------------|
-| AI-01 | Variational Autoencoder (VAE) | PCA | Non-linear 32-D latent space |
-| AI-02 | Deep Neural Network (MLP) | Random Forest | AUC = 0.9971 (validated) |
-| AI-03 | Neural Cox / DeepSurv | KM log-rank | Continuous survival risk score |
-| AI-04 | Permutation Importance | Gini importance | Model-agnostic biomarker ranking |
+5. Survival Analysis
 
-All AI modules are implemented **from first principles** in NumPy/SciPy — no black-box deep learning frameworks required, making the mathematical foundations transparent and reproducible.
+Survival analysis by Kaplan-Meier and cumulative hazard showed trends associated with patient survival that were distributed by subtype.
 
----
+However, pairwise log-rank significance remained limited across several subtype comparisons .
 
-## 📚 Literature Validation
+cohort heterogeneity,
+censoring complexity,
+and intrinsic limitations of bulk RNA-seq survival stratification.
 
-Results cross-validated against 6 landmark publications:
+The project therefore emphasizes:
 
-| Reference | What We Validated |
-|-----------|-------------------|
-| Perou et al., *Nature* 2000 | ESR1/PGR=Luminal A, KRT5/EGFR=Basal confirmed |
-| Parker et al., *J Clin Oncol* 2009 | 49/50 PAM50 genes present and concordant |
-| TCGA Network, *Nature* 2012 | k=3 subtypes recapitulate TCGA molecular portraits |
-| Ciriello et al., *Nat Genet* 2013 | MKI67/CCNB1 in proliferative Luminal B |
-| Liu et al., *Cell* 2018 | Clinical survival endpoints methodology |
-| Koboldt et al., *Nature* 2012 | BRCA1/2 pathway in basal-enriched cluster |
+biological subtype reconstruction,
+transcriptomic interpretation,
+and predictive modeling
 
----
 
-## 🎯 Scientific Contribution
 
-1. **Reproduced** established PAM50 subtypes using unsupervised ML — no prior biological assumptions
-2. **Discovered** C2 (Luminal B) as highest-risk cluster with drug-targetable oncogenes: **CDC20, AURKB, PLK1, MELK**
-3. **Built** clinical-grade classifier (AUC=0.997) deployable for prospective patient stratification
-4. **Implemented** VAE, neural Cox, and permutation importance from mathematical first principles
-5. **Generated** full reproducible pipeline: 8 scripts → 11 figures → 30-page research report
+Explainable AI Framework
+Random Forest Classifier
 
----
+I trained a Random Forest classifier to predict the subtype assignments from the transcriptomic clustering analysis.
 
-## 📄 License
+Performance
 
-MIT License — free to use, modify, and distribute with attribution.
+Internal cross-validation achieved near-perfect discrimination:
 
----
+AUC≈0.997
 
-## 📬 Citation
+These results indicate good internal subtype separation for this TCGA cohort.
 
-If you use this code or findings, please cite:
-```bibtex
-@misc{brca_multiomics_2025,
-  title     = {TCGA-BRCA Multi-omics Subtype Discovery and AI-Driven Survival Analysis},
-  author    = {Your Name},
-  year      = {2025},
-  url       = {https://github.com/YOUR_USERNAME/TCGA-BRCA-MultiOmics},
-  note      = {KAUST Computational Biology Research Pipeline}
-}
-```
+Deep Neural Network Classifier
 
----
+The multilayer perceptron classifier achieved high predictive performance while modeling transcriptomic (or global) gene expression relationships that are highly nonlinear.
 
-*Built with Python · scikit-learn · NumPy · SciPy · Matplotlib*
+Variational Autoencoder (VAE)
+
+I learned a non-linear latent space with a custom Variational Autoencoder.
+
+Objectives
+transcriptomic compression,
+nonlinear representation learning,
+subtype manifold exploration,
+dimensionality reduction beyond PCA.
+
+
+
+Explainability Layer
+
+Permutation-based feature importance analysis enabled:
+
+biomarker prioritization,
+subtype-associated gene ranking,
+and interpretable AI-driven molecular attribution. 
+
+Literature Concordance
+
+My results recreate the findings of current breast cancer transcriptomics researches:
+
+Study	Concordance
+Perou et al. ( 2000)	Intrinsic subtype biology reproduced from publicly accessible TCGA datasets.
+Parker et al. ( 2009)	High consistent use of PAM50 markers.
+TCGA Network (2012)	Transcriptomic subtype structure recapitulated
+Ciriello et al. (2013) Proliferative Luminal B signatures confirmed
+Koboldt DC, et al.	BRCA-associated pathway biology supports a multifactorial origin for ovarian cancer.
+
+This project develops and evaluates a reproducible computational framework for Oncology, specifically for discovering transcriptomic subtypes of breast cancer, explainable AI-driven classification and subsequent prioritization of biomarkers.
+
+I present a pipeline that learns to generate biologically meaningful molecular states directly and exclusively from high-dimensional RNA-seq data while simultaneously incorporating survival information, differential gene expression measurements, pathway level results and interpretable machine learning models into a streamlined research pipeline.
+
+This resource provides a solid platform on which future multi-omics precision oncology and advanced high-dimensional AI-powered translational cancer genomics analyses can be conducted.
