@@ -276,10 +276,10 @@ The findings reproduce major observations from landmark breast cancer transcript
 | Koboldt et al. (2012) | BRCA-associated pathway biology supported |
 
 ---
-#  ## 📊 Results & Figures
+#  Results & Figures
 
 ### Master Dashboard
-![Master Dashboard](figures/00_MASTER_DASHBOARD.png)
+![Master Dashboard](figures/00_MASTER_DASHBOARD .png)
 
 ### Survival Analysis
 ![Survival Analysis](figures/SURVIVAL_ANALYSIS_COMPLETE.png)
