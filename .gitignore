@@ -1,0 +1,14 @@
+# Data (too large for GitHub)
+data/
+results/*.pkl
+results/*.npy
+*.gz
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

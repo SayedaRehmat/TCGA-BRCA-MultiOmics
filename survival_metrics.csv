@@ -1,0 +1,4 @@
+cluster,n,n_events,event_rate_pct,median_OS_years
+C1,628,93,14.8,10.61
+C2,236,34,14.4,20.42
+C3,350,71,20.3,9.48
