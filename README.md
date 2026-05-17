@@ -1,4 +1,4 @@
-# 🧬 TCGA-BRCA Transcriptomic Subtype Discovery and Explainable AI Prognostic Modeling
+#  TCGA-BRCA Transcriptomic Subtype Discovery and Explainable AI Prognostic Modeling
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![Cancer Genomics](https://img.shields.io/badge/Domain-Computational_Oncology-purple)
